@@ -1,0 +1,33 @@
+@font-face {
+    src: url(Font/TIE-Wing.ttf);
+    font-family: tie-wing;
+}
+
+@font-face {
+    src: url(Font/Starjhol.ttf);
+    font-family: outline;
+}
+
+.App {
+    text-align: center;
+    font-family: tie-wing;
+    font-size: 14px;
+}
+
+.App-header {
+    background-color: rgb(44, 44, 44);
+    color: #fee71e;
+    font-family: outline;
+    padding: 5;
+}
+
+.altFont {
+    font-family: "monospace";
+    font-size: 12;
+    font-weight: bold;
+}
+
+.margin-top {
+    margin: 5px auto;
+    text-align: center;
+}
