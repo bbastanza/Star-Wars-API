@@ -6,28 +6,38 @@ function TableData(props) {
     const [characters, setCharacters] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [tableComponents, setTableComponents] = useState([]);
+    const recievedData = isLoading === false;
 
     useEffect(() => {
         fetchData();
     }, []);
 
     useEffect(() => {
+        // delete previous components
+        setIsLoading(true);
+        setTableComponents([...tableComponents, ""]);
+        setCharacters([]);
+        fetchData();
+    }, [props.pageNumber]);
+
+    useEffect(() => {
         createTableRows();
-    }, [isLoading === false]);
+    }, [recievedData]);
 
     const fetchData = async () => {
-        const data = await fetch("https://swapi.dev/api/people").then((response) => response.json());
+        const data = await fetch(`https://swapi.dev/api/people?search=a&page=${props.pageNumber}`).then(response =>
+            response.json()
+        );
         let allCharacters = data.results;
+
         for (const character of allCharacters) {
             const homeWorldUrl = character.homeworld;
-            const planet = await fetch(homeWorldUrl).then((response) => response.json());
+            const planet = await fetch(homeWorldUrl).then(response => response.json());
 
             const speciesUrls = character.species;
-
-            let species;
-            if (speciesUrls.length === 0) species = "Human";
-            else {
-                const speciesObject = await fetch(speciesUrls[0]).then((response) => response.json());
+            let species = "Human";
+            if (speciesUrls.length > 0) {
+                const speciesObject = await fetch(speciesUrls[0]).then(response => response.json());
                 species = speciesObject.name;
             }
 
@@ -40,13 +50,19 @@ function TableData(props) {
     };
 
     const createTableRows = () => {
-        let newComponets = characters.map((person) => {
+        let newComponets = characters.map(person => {
             return <TableDataRow character={person} key={person.id} />;
         });
         setTableComponents([...tableComponents, ...newComponets]);
     };
 
-    return <tbody>{tableComponents}</tbody>;
+    if (isLoading) {
+        return (
+            <tbody>
+                <tr></tr>
+            </tbody>
+        );
+    } else return <tbody>{tableComponents}</tbody>;
 }
 
 export default TableData;

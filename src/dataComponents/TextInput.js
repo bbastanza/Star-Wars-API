@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 function TextInput() {
     const [textBox, setTextBox] = useState("");
-    const pressedSubmit = (e) => {
+    const pressedSubmit = e => {
         e.preventDefault();
     };
 
@@ -13,11 +13,10 @@ function TextInput() {
 
     return (
         <form onSubmit={pressedSubmit}>
-            <button className="btn btn-warning">Search</button>
+            <button className="btn btn-warning col-1">Search</button>
             <input
                 onChange={handleChange}
-                style={{ fontSize: 12 }}
-                className="col-sm-3 margin-top"
+                className="col-sm-5 margin-top altFont"
                 type="text"
                 placeholder="Help me, Obi-Wan Kenobi. You’re my only hope."
                 value={textBox}

@@ -1,7 +1,8 @@
 import React from "react";
 
 function TableDataRow(props) {
-    const weight = Math.floor(props.character.mass * 2.204623);
+    let weight = Math.floor(props.character.mass * 2.204623);
+    if (isNaN(weight)) weight = "unknown";
     let feet = Math.floor((props.character.height * 0.3937008) / 12);
     let inches = Math.round((props.character.height * 0.3937008) % 12);
     if (inches === 12) {
