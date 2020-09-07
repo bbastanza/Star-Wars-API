@@ -1,47 +1,48 @@
 import React, { useState, useEffect } from "react";
 import TableDataRow from "./../dummyComponents/TableDataRow";
-import Axios from "axios";
+import axios from "axios";
 
 function TableData(props) {
     const [characters, setCharacters] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [tableComponents, setTableComponents] = useState([]);
-    const recievedData = isLoading === false;
+    const empty = [];
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     fetchData();
+    // }, []);
 
     useEffect(() => {
         // delete previous components
         setIsLoading(true);
-        setTableComponents([...tableComponents, ""]);
-        setCharacters([]);
+        setTableComponents([...tableComponents, ...empty]);
+        setCharacters(...characters, ...empty);
         fetchData();
     }, [props.pageNumber]);
 
     useEffect(() => {
-        createTableRows();
-    }, [recievedData]);
+        if (!isLoading) createTableRows();
+    }, [isLoading]);
 
     const fetchData = async () => {
-        const data = await fetch(`https://swapi.dev/api/people?search=a&page=${props.pageNumber}`).then(response =>
-            response.json()
-        );
-        let allCharacters = data.results;
+        const allCharacters = await axios
+            .get(`https://swapi.dev/api/people?search=a&page=${props.pageNumber}`)
+            .then(response => response.data.results)
+            .catch(error => console.log(error));
 
         for (const character of allCharacters) {
-            const homeWorldUrl = character.homeworld;
-            const planet = await fetch(homeWorldUrl).then(response => response.json());
+            character.homeworldName = await axios
+                .get(character.homeworld)
+                .then(response => response.data.name)
+                .catch(error => console.log(error));
 
-            const speciesUrls = character.species;
             let species = "Human";
-            if (speciesUrls.length > 0) {
-                const speciesObject = await fetch(speciesUrls[0]).then(response => response.json());
-                species = speciesObject.name;
+            if (character.species.length > 0) {
+                species = await axios
+                    .get(character.species[0])
+                    .then(response => response.data.name)
+                    .catch(error => console.log(error));
             }
-
-            character.homePlanet = planet.name;
             character.speciesName = species;
             character.id = Math.random();
         }

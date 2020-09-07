@@ -14,6 +14,8 @@ function Table() {
         if (pageNumber > 1) setPageNumber(prevPageNumber => prevPageNumber - 1);
     };
 
+    const isLoading = () => {};
+
     return (
         <div>
             <button onClick={prevPage} className="btn btn-danger">
@@ -28,7 +30,7 @@ function Table() {
                 className="table table-dark table-striped margin-top table-hover shadows"
             >
                 <HeaderRow />
-                <TableData pageNumber={pageNumber} isLoading={true} />
+                <TableData pageNumber={pageNumber} isLoading={isLoading} />
             </table>
         </div>
     );
