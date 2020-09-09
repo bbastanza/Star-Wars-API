@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 function HeaderRow() {
     return (
@@ -15,4 +15,4 @@ function HeaderRow() {
     );
 }
 
-export default HeaderRow;
+export default memo(HeaderRow);

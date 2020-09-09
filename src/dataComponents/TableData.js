@@ -6,17 +6,13 @@ function TableData(props) {
     const [characters, setCharacters] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [tableComponents, setTableComponents] = useState([]);
-    const empty = [];
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, []);
 
     useEffect(() => {
         // delete previous components
         setIsLoading(true);
-        setTableComponents([...tableComponents, ...empty]);
-        setCharacters(...characters, ...empty);
+        props.loading();
+        setTableComponents([]);
+        setCharacters([]);
         fetchData();
     }, [props.pageNumber]);
 
@@ -26,16 +22,14 @@ function TableData(props) {
 
     const fetchData = async () => {
         const allCharacters = await axios
-            .get(`https://swapi.dev/api/people?search=a&page=${props.pageNumber}`)
+            .get(`https://swapi.dev/api/people/?page=${props.pageNumber}`)
             .then(response => response.data.results)
             .catch(error => console.log(error));
-
         for (const character of allCharacters) {
             character.homeworldName = await axios
                 .get(character.homeworld)
                 .then(response => response.data.name)
                 .catch(error => console.log(error));
-
             let species = "Human";
             if (character.species.length > 0) {
                 species = await axios
@@ -47,6 +41,7 @@ function TableData(props) {
             character.id = Math.random();
         }
         setCharacters([...characters, ...allCharacters]);
+        console.log(characters);
         setIsLoading(false);
     };
 
@@ -55,6 +50,7 @@ function TableData(props) {
             return <TableDataRow character={person} key={person.id} />;
         });
         setTableComponents([...tableComponents, ...newComponets]);
+        props.doneLoading();
     };
 
     if (isLoading) {

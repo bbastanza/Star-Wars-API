@@ -5,16 +5,18 @@ import TableData from "./TableData";
 
 function Table() {
     const [pageNumber, setPageNumber] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
 
     const nextPage = () => {
-        if (pageNumber < 6) setPageNumber(prevPageNumber => prevPageNumber + 1);
+        if (pageNumber < 9) setPageNumber(prevPageNumber => prevPageNumber + 1);
     };
 
     const prevPage = () => {
         if (pageNumber > 1) setPageNumber(prevPageNumber => prevPageNumber - 1);
     };
 
-    const isLoading = () => {};
+    const loading = () => setIsLoading(true);
+    const doneLoading = () => setIsLoading(false);
 
     return (
         <div>
@@ -26,11 +28,11 @@ function Table() {
             </button>
 
             <table
-                style={{ width: "80%", padding: 10 }}
+                style={{ width: "80%", padding: 10, marginTop: 15 }}
                 className="table table-dark table-striped margin-top table-hover shadows"
             >
-                <HeaderRow />
-                <TableData pageNumber={pageNumber} isLoading={isLoading} />
+                {isLoading ? null : <HeaderRow />}
+                <TableData pageNumber={pageNumber} doneLoading={doneLoading} loading={loading} />
             </table>
         </div>
     );

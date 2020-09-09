@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 
-function TextInput() {
+function SearchBar() {
     const [textBox, setTextBox] = useState("");
     const pressedSubmit = e => {
         e.preventDefault();
@@ -25,4 +25,4 @@ function TextInput() {
     );
 }
 
-export default TextInput;
+export default memo(SearchBar);
