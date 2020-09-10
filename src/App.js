@@ -1,9 +1,7 @@
 import React from "react";
 import "./App.css";
-import Header from "./dataComponents/Header";
-import SearchBar from "./dataComponents/SearchBar";
-import Table from "./dataComponents/Table";
-import blueSaber from "./Images/blueLightsaber.png";
+import Header from "./dummyComponents/Header";
+import TableData from "./dataComponents/TableData";
 
 function App() {
     return (
@@ -11,9 +9,8 @@ function App() {
             <header className="App-header">
                 <Header />
             </header>
-            <SearchBar />
-            <img src={blueSaber} style={{ height: 60, width: 700 }} alt="lightsaber" />
-            <Table />
+
+            <TableData />
         </div>
     );
 }

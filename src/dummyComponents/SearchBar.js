@@ -1,14 +1,17 @@
 import React, { useState, memo } from "react";
 
-function SearchBar() {
-    const [textBox, setTextBox] = useState("");
+function SearchDisplay(props) {
+    const [textBoxValue, settextBoxValue] = useState("");
+
     const pressedSubmit = e => {
         e.preventDefault();
+        props.handleSearch(textBoxValue);
     };
 
     function handleChange(e) {
         const { value } = e.target;
-        setTextBox(value);
+        settextBoxValue(value);
+        if (textBoxValue === "") props.handleSearch("");
     }
 
     return (
@@ -19,10 +22,10 @@ function SearchBar() {
                 className="col-sm-5 margin-top altFont"
                 type="text"
                 placeholder="Help me, Obi-Wan Kenobi. You’re my only hope."
-                value={textBox}
+                value={textBoxValue}
             />
         </form>
     );
 }
 
-export default memo(SearchBar);
+export default memo(SearchDisplay);
