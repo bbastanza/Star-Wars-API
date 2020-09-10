@@ -8,11 +8,8 @@ function TableData(props) {
     const [tableComponents, setTableComponents] = useState([]);
 
     useEffect(() => {
-        // delete previous components
         setIsLoading(true);
         props.loading();
-        setTableComponents([]);
-        setCharacters([]);
         fetchData();
     }, [props.pageNumber]);
 
@@ -21,11 +18,11 @@ function TableData(props) {
     }, [isLoading]);
 
     const fetchData = async () => {
-        const allCharacters = await axios
+        const returnedCharacters = await axios
             .get(`https://swapi.dev/api/people/?page=${props.pageNumber}`)
             .then(response => response.data.results)
             .catch(error => console.log(error));
-        for (const character of allCharacters) {
+        for (const character of returnedCharacters) {
             character.homeworldName = await axios
                 .get(character.homeworld)
                 .then(response => response.data.name)
@@ -40,8 +37,8 @@ function TableData(props) {
             character.speciesName = species;
             character.id = Math.random();
         }
-        setCharacters([...characters, ...allCharacters]);
-        console.log(characters);
+        setCharacters([...returnedCharacters]);
+
         setIsLoading(false);
     };
 
@@ -49,7 +46,7 @@ function TableData(props) {
         let newComponets = characters.map(person => {
             return <TableDataRow character={person} key={person.id} />;
         });
-        setTableComponents([...tableComponents, ...newComponets]);
+        setTableComponents([...newComponets]);
         props.doneLoading();
     };
 

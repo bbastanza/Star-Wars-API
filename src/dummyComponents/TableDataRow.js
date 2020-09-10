@@ -1,8 +1,9 @@
 import React from "react";
 
 function TableDataRow(props) {
-    let weight = Math.floor(props.character.mass * 2.204623);
-    if (isNaN(weight)) weight = "unknown";
+    const weight = isNaN(Math.floor(props.character.mass * 2.204623))
+        ? "unknown"
+        : Math.floor(props.character.mass * 2.204623);
 
     let feet = Math.floor((props.character.height * 0.3937008) / 12);
     let inches = Math.round((props.character.height * 0.3937008) % 12);
@@ -10,8 +11,7 @@ function TableDataRow(props) {
         feet += 1;
         inches = 0;
     }
-    let height;
-    isNaN(feet) && isNaN(inches) ? (height = "unknown") : (height = `${feet}' ${inches}"`);
+    const height = isNaN(feet) && isNaN(inches) ? "unknown" : `${feet}' ${inches}"`;
 
     return (
         <tr className="altFont">
