@@ -6,11 +6,13 @@ function SearchDisplay(props) {
     const pressedSubmit = e => {
         e.preventDefault();
         props.handleSearch(textBoxValue);
+        settextBoxValue("");
     };
 
     function handleChange(e) {
         const { value } = e.target;
         settextBoxValue(value);
+        /// when textbox is empied restore table
         if (textBoxValue === "") props.handleSearch("");
     }
 

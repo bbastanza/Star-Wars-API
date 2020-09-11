@@ -23,35 +23,37 @@ export default function TableData() {
     }, [isLoading]);
 
     const nextPage = () => {
+        setSearchCharacters("");
         if (pageNumber < 9) setPageNumber(prevPageNumber => prevPageNumber + 1);
     };
 
     const prevPage = () => {
+        setSearchCharacters("");
         if (pageNumber > 1) setPageNumber(prevPageNumber => prevPageNumber - 1);
     };
+
     const fetchSearch = async searchCharacters => {
-        const searchResult = await axios
+        const searchResults = await axios
             .get(`https://swapi.dev/api/people/?search=${searchCharacters}`)
             .then(response => response.data.results);
-        for (let character of searchResult) {
-            character = formatData(character);
-            character.speciesName = await fetchSpecies(character);
-            character.homeworldName = await fetchHomeworld(character);
-        }
-        setCharacters([...searchResult]);
-        setIsLoading(false);
+        setAdditionalData(searchResults);
     };
+
     const fetchPage = async () => {
-        const returnedCharacters = await axios
+        const pageResults = await axios
             .get(`https://swapi.dev/api/people/?page=${pageNumber}`)
             .then(response => response.data.results)
             .catch(error => console.log(error));
-        for (let character of returnedCharacters) {
+        setAdditionalData(pageResults);
+    };
+
+    const setAdditionalData = async results => {
+        for (let character of results) {
             character = formatData(character);
             character.speciesName = await fetchSpecies(character);
             character.homeworldName = await fetchHomeworld(character);
         }
-        setCharacters([...returnedCharacters]);
+        setCharacters([...results]);
         setIsLoading(false);
     };
 
@@ -100,6 +102,7 @@ export default function TableData() {
         });
         setTableComponents([...newComponets]);
     };
+
     const handleSearch = searched => {
         setSearchCharacters(searched);
     };
