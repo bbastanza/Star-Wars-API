@@ -9,27 +9,46 @@ import blueSaber from "./../Images/blueLightsaber.png";
 export default function TableData() {
     const [characters, setCharacters] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [tableComponents, setTableComponents] = useState([]);
     const [pageNumber, setPageNumber] = useState(1);
     const [searchCharacters, setSearchCharacters] = useState("");
+    const [tableComponents, setTableComponents] = useState([]);
+    const [cachedComponentPages, setCachedComponetPages] = useState([]);
 
     useEffect(() => {
         setIsLoading(true);
-        searchCharacters.length < 1 ? fetchPage() : fetchSearch(searchCharacters);
+        searchCharacters.length > 0 ? fetchSearch(searchCharacters) : displayPage();
     }, [pageNumber, searchCharacters]);
 
     useEffect(() => {
         if (!isLoading) createTableRows();
     }, [isLoading]);
 
-    const nextPage = () => {
-        setSearchCharacters("");
-        if (pageNumber < 9) setPageNumber(prevPageNumber => prevPageNumber + 1);
+    const displayPage = () => {
+        for (const page of cachedComponentPages) {
+            if (page.pageNumber === pageNumber) {
+                setTableComponents(page.components);
+                setIsLoading(false);
+                return;
+            }
+        }
+        fetchPage();
     };
 
-    const prevPage = () => {
+    const changePage = (type, number) => {
         setSearchCharacters("");
-        if (pageNumber > 1) setPageNumber(prevPageNumber => prevPageNumber - 1);
+        switch (type) {
+            case "next":
+                if (pageNumber < 9) setPageNumber(prevPageNumber => prevPageNumber + 1);
+                break;
+            case "previous":
+                if (pageNumber > 1) setPageNumber(prevPageNumber => prevPageNumber - 1);
+                break;
+            case "number":
+                setPageNumber(number);
+                break;
+            default:
+                break;
+        }
     };
 
     const fetchSearch = async searchCharacters => {
@@ -60,7 +79,6 @@ export default function TableData() {
     const formatData = character => {
         character.heightFormatted = formatHeight(character);
         character.weight = formatWeight(character);
-        character.id = Math.random();
         return character;
     };
 
@@ -98,9 +116,20 @@ export default function TableData() {
 
     const createTableRows = () => {
         let newComponets = characters.map(person => {
-            return <TableDataRow character={person} key={person.id} />;
+            return <TableDataRow character={person} key={person.name} />;
         });
         setTableComponents([...newComponets]);
+        cachePage(newComponets);
+    };
+
+    const cachePage = newPageComponents => {
+        let newCachedComponents = cachedComponentPages;
+        const newPage = {
+            pageNumber: pageNumber,
+            components: newPageComponents,
+        };
+        newCachedComponents.push(newPage);
+        setCachedComponetPages(newCachedComponents);
     };
 
     const handleSearch = searched => {
@@ -111,7 +140,8 @@ export default function TableData() {
         <div>
             <SearchBar handleSearch={handleSearch} />
             <img src={blueSaber} style={{ height: 60, width: 700 }} alt="lightsaber" />
-            <Buttons nextPage={nextPage} prevPage={prevPage} />
+            <Buttons changePage={changePage} />
+            <h4 style={{ color: "#fee71e", marginTop: 20 }}>page: {pageNumber}</h4>
         </div>
     );
 
