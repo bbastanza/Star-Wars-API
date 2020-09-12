@@ -18,7 +18,7 @@ function SearchDisplay(props) {
 
     return (
         <form onSubmit={pressedSubmit}>
-            <button className="btn btn-warning col-1">Search</button>
+            <button className="btn btn-warning col-1">Search Characters</button>
             <input
                 onChange={handleChange}
                 className="col-sm-5 margin-top altFont"

@@ -141,7 +141,6 @@ export default function TableData() {
             <SearchBar handleSearch={handleSearch} />
             <img src={blueSaber} style={{ height: 60, width: 700 }} alt="lightsaber" />
             <Buttons changePage={changePage} />
-            <h4 style={{ color: "#fee71e", marginTop: 20 }}>page: {pageNumber}</h4>
         </div>
     );
 
@@ -151,6 +150,9 @@ export default function TableData() {
         return (
             <div>
                 {stationaryComponets}
+                {searchCharacters === "" ? (
+                    <h4 style={{ color: "#fee71e", marginTop: 20 }}>page: {pageNumber}</h4>
+                ) : null}
                 <Table rows={tableComponents} />
             </div>
         );
