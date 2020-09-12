@@ -6,13 +6,12 @@ import axios from "axios";
 
 export default function TableData() {
     const [characters, setCharacters] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isFetching, setIsFetching] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const [searchCharacters, setSearchCharacters] = useState("");
     const [tableComponents, setTableComponents] = useState([]);
 
     useEffect(() => {
-        setIsLoading(true);
         const cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
         searchCharacters.length > 0 ? fetchSearch(searchCharacters) : displayPage(cachedPage);
     }, [pageNumber, searchCharacters]);
@@ -22,11 +21,7 @@ export default function TableData() {
     }, [characters]);
 
     const displayPage = cachedPage => {
-        if (cachedPage !== null) {
-            setCharacters(cachedPage.components);
-        } else {
-            fetchPage();
-        }
+        cachedPage !== null ? setCharacters(cachedPage.components) : fetchPage();
     };
 
     const changePage = (type, number) => {
@@ -45,7 +40,7 @@ export default function TableData() {
     };
 
     const fetchSearch = async searchCharacters => {
-        setIsLoading(true);
+        setIsFetching(true);
         const searchResults = await axios
             .get(`https://swapi.dev/api/people/?search=${searchCharacters}`)
             .then(response => response.data.results);
@@ -53,6 +48,7 @@ export default function TableData() {
     };
 
     const fetchPage = async () => {
+        setIsFetching(true);
         const pageResults = await axios
             .get(`https://swapi.dev/api/people/?page=${pageNumber}`)
             .then(response => response.data.results)
@@ -113,7 +109,6 @@ export default function TableData() {
             return <TableDataRow character={person} key={person.name} />;
         });
         setTableComponents([...newComponents]);
-        setIsLoading(false);
     };
 
     const cachePage = newPageComponents => {
@@ -124,14 +119,23 @@ export default function TableData() {
             };
             localStorage.setItem(`page${pageNumber}`, JSON.stringify(storageItem));
         }
+        setIsFetching(false);
     };
 
     const handleSearch = searched => {
         setSearchCharacters(searched);
     };
 
-    if (isLoading) {
-        return <StationaryComponets changePage={changePage} handleSearch={handleSearch} />;
+    if (isFetching) {
+        return (
+            <div>
+                <StationaryComponets changePage={changePage} handleSearch={handleSearch} />
+                <button style={{ marginTop: 60, padding: 20, fontSize: 30 }} class="btn btn-warning">
+                    I find your lack of faith disturbing
+                    <span class="spinner-grow spinner-grow-sm"></span>
+                </button>
+            </div>
+        );
     } else {
         return (
             <div>
