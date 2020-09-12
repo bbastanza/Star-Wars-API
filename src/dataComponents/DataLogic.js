@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Table from "../dummyComponents/Table";
 import TableDataRow from "../dummyComponents/TableDataRow";
-import Buttons from "../dummyComponents/Buttons";
+import StationaryComponets from "./../dummyComponents/StationaryComponents";
 import axios from "axios";
-import SearchBar from "../dummyComponents/SearchBar";
-import blueSaber from "./../Images/blueLightsaber.png";
 
 export default function TableData() {
     const [characters, setCharacters] = useState([]);
@@ -12,30 +10,25 @@ export default function TableData() {
     const [pageNumber, setPageNumber] = useState(1);
     const [searchCharacters, setSearchCharacters] = useState("");
     const [tableComponents, setTableComponents] = useState([]);
-    // const [cachedComponentPages, setCachedComponetPages] = useState([]);
 
     useEffect(() => {
         setIsLoading(true);
-        searchCharacters.length > 0 ? fetchSearch(searchCharacters) : displayPage();
+        const cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
+        searchCharacters.length > 0 ? fetchSearch(searchCharacters) : displayPage(cachedPage);
     }, [pageNumber, searchCharacters]);
 
     useEffect(() => {
-        if (!isLoading) createTableRows();
-    }, [isLoading]);
-    ///////////////////////////////////////////////////
-    const displayPage = () => {
-        let cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
+        createTableRows();
+    }, [characters]);
 
+    const displayPage = cachedPage => {
         if (cachedPage !== null) {
-            console.log(cachedPage.components);
-            if (cachedPage.pageNumber === pageNumber) {
-                setTableComponents(cachedPage.components);
-                setIsLoading(false);
-                return;
-            }
-        } else fetchPage();
+            setCharacters(cachedPage.components);
+        } else {
+            fetchPage();
+        }
     };
-    ////////////////////////////////////////////////
+
     const changePage = (type, number) => {
         setSearchCharacters("");
         switch (type) {
@@ -48,12 +41,11 @@ export default function TableData() {
             case "number":
                 setPageNumber(number);
                 break;
-            default:
-                break;
         }
     };
 
     const fetchSearch = async searchCharacters => {
+        setIsLoading(true);
         const searchResults = await axios
             .get(`https://swapi.dev/api/people/?search=${searchCharacters}`)
             .then(response => response.data.results);
@@ -74,8 +66,8 @@ export default function TableData() {
             character.speciesName = await fetchSpecies(character);
             character.homeworldName = await fetchHomeworld(character);
         }
+        cachePage(results);
         setCharacters([...results]);
-        setIsLoading(false);
     };
 
     const formatData = character => {
@@ -117,49 +109,33 @@ export default function TableData() {
     };
 
     const createTableRows = () => {
-        let newComponets = characters.map(person => {
+        let newComponents = characters.map(person => {
             return <TableDataRow character={person} key={person.name} />;
         });
-        setTableComponents([...newComponets]);
-        cachePage(newComponets);
+        setTableComponents([...newComponents]);
+        setIsLoading(false);
     };
 
-    // const cachePage = newPageComponents => {
-    //     let newCachedComponents = cachedComponentPages;
-    //     const newPage = {
-    //         pageNumber: pageNumber,
-    //         components: newPageComponents,
-    //     };
-    //     newCachedComponents.push(newPage);
-    //     setCachedComponetPages(newCachedComponents);
-    // };
-    ////////////////////////////////////////////////////////////////////////////////////////////
     const cachePage = newPageComponents => {
-        const storageItem = {
-            pageNumber: pageNumber,
-            components: newPageComponents,
-        };
-        localStorage.setItem(`page${pageNumber}`, JSON.stringify(storageItem));
+        if (searchCharacters.length < 1) {
+            const storageItem = {
+                pageNumber: pageNumber,
+                components: newPageComponents,
+            };
+            localStorage.setItem(`page${pageNumber}`, JSON.stringify(storageItem));
+        }
     };
-    /////////////////////////////////////////////////////////////////////////////////////////////
+
     const handleSearch = searched => {
         setSearchCharacters(searched);
     };
 
-    const stationaryComponets = (
-        <div>
-            <SearchBar handleSearch={handleSearch} />
-            <img src={blueSaber} style={{ height: 60, width: 700 }} alt="lightsaber" />
-            <Buttons changePage={changePage} />
-        </div>
-    );
-
     if (isLoading) {
-        return <div>{stationaryComponets}</div>;
+        return <StationaryComponets changePage={changePage} handleSearch={handleSearch} />;
     } else {
         return (
             <div>
-                {stationaryComponets}
+                <StationaryComponets changePage={changePage} handleSearch={handleSearch} />
                 {searchCharacters === "" ? (
                     <h4 style={{ color: "#fee71e", marginTop: 20 }}>page: {pageNumber}</h4>
                 ) : null}
