@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Table from "./../dummyComponents/Table";
-import TableDataRow from "./../dummyComponents/TableDataRow";
-import Buttons from "./../dummyComponents/Buttons";
+import Table from "../dummyComponents/Table";
+import TableDataRow from "../dummyComponents/TableDataRow";
+import Buttons from "../dummyComponents/Buttons";
 import axios from "axios";
 import SearchBar from "../dummyComponents/SearchBar";
 import blueSaber from "./../Images/blueLightsaber.png";
@@ -12,7 +12,7 @@ export default function TableData() {
     const [pageNumber, setPageNumber] = useState(1);
     const [searchCharacters, setSearchCharacters] = useState("");
     const [tableComponents, setTableComponents] = useState([]);
-    const [cachedComponentPages, setCachedComponetPages] = useState([]);
+    // const [cachedComponentPages, setCachedComponetPages] = useState([]);
 
     useEffect(() => {
         setIsLoading(true);
@@ -22,18 +22,20 @@ export default function TableData() {
     useEffect(() => {
         if (!isLoading) createTableRows();
     }, [isLoading]);
-
+    ///////////////////////////////////////////////////
     const displayPage = () => {
-        for (const page of cachedComponentPages) {
-            if (page.pageNumber === pageNumber) {
-                setTableComponents(page.components);
+        let cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
+
+        if (cachedPage !== null) {
+            console.log(cachedPage.components);
+            if (cachedPage.pageNumber === pageNumber) {
+                setTableComponents(cachedPage.components);
                 setIsLoading(false);
                 return;
             }
-        }
-        fetchPage();
+        } else fetchPage();
     };
-
+    ////////////////////////////////////////////////
     const changePage = (type, number) => {
         setSearchCharacters("");
         switch (type) {
@@ -122,16 +124,24 @@ export default function TableData() {
         cachePage(newComponets);
     };
 
+    // const cachePage = newPageComponents => {
+    //     let newCachedComponents = cachedComponentPages;
+    //     const newPage = {
+    //         pageNumber: pageNumber,
+    //         components: newPageComponents,
+    //     };
+    //     newCachedComponents.push(newPage);
+    //     setCachedComponetPages(newCachedComponents);
+    // };
+    ////////////////////////////////////////////////////////////////////////////////////////////
     const cachePage = newPageComponents => {
-        let newCachedComponents = cachedComponentPages;
-        const newPage = {
+        const storageItem = {
             pageNumber: pageNumber,
             components: newPageComponents,
         };
-        newCachedComponents.push(newPage);
-        setCachedComponetPages(newCachedComponents);
+        localStorage.setItem(`page${pageNumber}`, JSON.stringify(storageItem));
     };
-
+    /////////////////////////////////////////////////////////////////////////////////////////////
     const handleSearch = searched => {
         setSearchCharacters(searched);
     };
