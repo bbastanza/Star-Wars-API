@@ -11,9 +11,11 @@ export default function TableData() {
     const [searchCharacters, setSearchCharacters] = useState("");
     const [tableComponents, setTableComponents] = useState([]);
     const [loadingMessage, setLoadingMessage] = useState([]);
+    const weeklyMilliseconds = useState(604800000);
 
     useEffect(() => {
         const cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
+        checkDateCreated();
         searchCharacters.length > 0 ? fetchSearch(searchCharacters) : displayPage(cachedPage);
     }, [pageNumber, searchCharacters]);
 
@@ -22,8 +24,15 @@ export default function TableData() {
         createTableRows();
     }, [characters]);
 
+    const checkDateCreated = () => {
+        const dateCreated = JSON.parse(localStorage.getItem("date-created"));
+        const now = new Date().getTime();
+        let timeDifference = now - dateCreated;
+        if (timeDifference > weeklyMilliseconds) localStorage.clear();
+    };
+
     const displayPage = cachedPage => {
-        cachedPage !== null ? setCharacters(cachedPage.components) : fetchPage();
+        cachedPage === null ? fetchPage() : setCharacters(cachedPage.components);
     };
 
     const changePage = (type, number) => {
@@ -121,6 +130,7 @@ export default function TableData() {
             };
             localStorage.setItem(`page${pageNumber}`, JSON.stringify(storageItem));
         }
+        if (pageNumber === 1) localStorage.setItem("date-created", JSON.stringify(new Date().getTime()));
         setIsFetching(false);
     };
 
@@ -142,7 +152,6 @@ export default function TableData() {
             "This ship that made the Kessel run in less than twelve parsecs",
         ];
         const i = Math.floor(Math.random() * messages.length);
-        console.log(i);
         setLoadingMessage(messages[i]);
     };
 
