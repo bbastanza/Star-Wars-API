@@ -1,42 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Table from "../dummyComponents/Table";
 import TableDataRow from "../dummyComponents/TableDataRow";
 import StationaryComponets from "./../dummyComponents/StationaryComponents";
 import axios from "axios";
+import { formatData } from "./format";
+import { checkDateCreated } from "./checkDateCreated";
+// import { changePage } from "./chagePage";
+// export { pageNumber, setPageNumber, setSearchCharacter };
 
 export default function TableData() {
     const [characters, setCharacters] = useState([]);
+    const previousCharacters = usePrevious(characters);
     const [isFetching, setIsFetching] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
-    const [searchCharacters, setSearchCharacters] = useState("");
+    const prevPageNumber = usePrevious(pageNumber);
+    const [searchCharacter, setSearchCharacter] = useState("");
+    const previousSearchCharacter = usePrevious(searchCharacter);
     const [tableComponents, setTableComponents] = useState([]);
-    const [loadingMessage, setLoadingMessage] = useState([]);
-    const weeklyMilliseconds = useState(604800000);
+    const [loadingMessage, setLoadingMessage] = useState("I sense much fear in you");
 
-    useEffect(() => {
+    window.onload = () => {
         const cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
         checkDateCreated();
-        searchCharacters.length > 0 ? fetchSearch(searchCharacters) : displayPage(cachedPage);
-    }, [pageNumber, searchCharacters]);
+        displayPage(cachedPage);
+    };
 
     useEffect(() => {
-        changeLoadingMessage();
-        createTableRows();
-    }, [characters]);
+        if (previousCharacters !== characters) {
+            changeLoadingMessage();
+            createTableRows();
+        } else if (previousSearchCharacter !== searchCharacter) {
+            if (searchCharacter.length > 0) fetchSearch(searchCharacter);
+        } else if (prevPageNumber !== pageNumber) {
+            const cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
+            displayPage(cachedPage);
+        }
+    });
 
-    const checkDateCreated = () => {
-        const dateCreated = JSON.parse(localStorage.getItem("date-created"));
-        const now = new Date().getTime();
-        let timeDifference = now - dateCreated;
-        if (timeDifference > weeklyMilliseconds) localStorage.clear();
-    };
+    function usePrevious(value) {
+        const ref = useRef();
+        useEffect(() => {
+            ref.current = value;
+        });
+        return ref.current;
+    }
 
-    const displayPage = cachedPage => {
+    function displayPage(cachedPage) {
         cachedPage === null ? fetchPage() : setCharacters(cachedPage.components);
-    };
+    }
 
-    const changePage = (type, number) => {
-        setSearchCharacters("");
+    function changePage(type, number) {
+        setSearchCharacter("");
         switch (type) {
             case "next":
                 if (pageNumber < 9) setPageNumber(prevPageNumber => prevPageNumber + 1);
@@ -48,26 +62,26 @@ export default function TableData() {
                 setPageNumber(number);
                 break;
         }
-    };
+    }
 
-    const fetchSearch = async searchCharacters => {
+    async function fetchSearch(searchCharacters) {
         setIsFetching(true);
         const searchResults = await axios
             .get(`https://swapi.dev/api/people/?search=${searchCharacters}`)
             .then(response => response.data.results);
         setAdditionalData(searchResults);
-    };
+    }
 
-    const fetchPage = async () => {
+    async function fetchPage() {
         setIsFetching(true);
         const pageResults = await axios
             .get(`https://swapi.dev/api/people/?page=${pageNumber}`)
             .then(response => response.data.results)
             .catch(error => console.log(error));
         setAdditionalData(pageResults);
-    };
+    }
 
-    const setAdditionalData = async results => {
+    async function setAdditionalData(results) {
         for (let character of results) {
             character = formatData(character);
             character.speciesName = await fetchSpecies(character);
@@ -75,29 +89,9 @@ export default function TableData() {
         }
         cachePage(results);
         setCharacters([...results]);
-    };
+    }
 
-    const formatData = character => {
-        character.heightFormatted = formatHeight(character);
-        character.weight = formatWeight(character);
-        return character;
-    };
-
-    const formatHeight = character => {
-        let feet = Math.floor((character.height * 0.3937008) / 12);
-        let inches = Math.round((character.height * 0.3937008) % 12);
-        if (inches === 12) {
-            feet += 1;
-            inches = 0;
-        }
-        return isNaN(feet) && isNaN(inches) ? "unknown" : `${feet}' ${inches}"`;
-    };
-
-    const formatWeight = character => {
-        return isNaN(Math.floor(character.mass * 2.204623)) ? "unknown" : Math.floor(character.mass * 2.204623);
-    };
-
-    const fetchSpecies = character => {
+    function fetchSpecies(character) {
         let species = "Human";
         if (character.species.length > 0) {
             species = axios
@@ -106,24 +100,24 @@ export default function TableData() {
                 .catch(error => console.log(error));
         }
         return species;
-    };
+    }
 
-    const fetchHomeworld = character => {
+    function fetchHomeworld(character) {
         return axios
             .get(character.homeworld)
             .then(response => response.data.name)
             .catch(error => console.log(error));
-    };
+    }
 
-    const createTableRows = () => {
+    function createTableRows() {
         let newComponents = characters.map(person => {
             return <TableDataRow character={person} key={person.name} />;
         });
         setTableComponents([...newComponents]);
-    };
+    }
 
-    const cachePage = newPageComponents => {
-        if (searchCharacters.length < 1) {
+    function cachePage(newPageComponents) {
+        if (searchCharacter.length < 1) {
             const storageItem = {
                 pageNumber: pageNumber,
                 components: newPageComponents,
@@ -132,13 +126,13 @@ export default function TableData() {
         }
         if (pageNumber === 1) localStorage.setItem("date-created", JSON.stringify(new Date().getTime()));
         setIsFetching(false);
-    };
+    }
 
-    const handleSearch = searched => {
-        setSearchCharacters(searched);
-    };
+    function handleSearch(searched) {
+        setSearchCharacter(searched);
+    }
 
-    const changeLoadingMessage = () => {
+    function changeLoadingMessage() {
         const messages = [
             "I find your lack of faith disturbing",
             "The Force will be with you. Always",
@@ -153,7 +147,7 @@ export default function TableData() {
         ];
         const i = Math.floor(Math.random() * messages.length);
         setLoadingMessage(messages[i]);
-    };
+    }
 
     if (isFetching) {
         return (
@@ -169,7 +163,7 @@ export default function TableData() {
         return (
             <div>
                 <StationaryComponets changePage={changePage} handleSearch={handleSearch} />
-                {searchCharacters === "" ? (
+                {searchCharacter === "" ? (
                     <h4 style={{ color: "#fee71e", marginTop: 20 }}>page: {pageNumber}</h4>
                 ) : null}
                 <Table rows={tableComponents} />
