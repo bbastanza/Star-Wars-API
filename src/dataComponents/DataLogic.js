@@ -10,6 +10,7 @@ export default function TableData() {
     const [pageNumber, setPageNumber] = useState(1);
     const [searchCharacters, setSearchCharacters] = useState("");
     const [tableComponents, setTableComponents] = useState([]);
+    const [loadingMessage, setLoadingMessage] = useState([]);
 
     useEffect(() => {
         const cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
@@ -17,6 +18,7 @@ export default function TableData() {
     }, [pageNumber, searchCharacters]);
 
     useEffect(() => {
+        changeLoadingMessage();
         createTableRows();
     }, [characters]);
 
@@ -33,7 +35,7 @@ export default function TableData() {
             case "previous":
                 if (pageNumber > 1) setPageNumber(prevPageNumber => prevPageNumber - 1);
                 break;
-            case "number":
+            default:
                 setPageNumber(number);
                 break;
         }
@@ -126,13 +128,31 @@ export default function TableData() {
         setSearchCharacters(searched);
     };
 
+    const changeLoadingMessage = () => {
+        const messages = [
+            "I find your lack of faith disturbing",
+            "The Force will be with you. Always",
+            "Do. Or do not. There is no try",
+            "I sense much fear in you",
+            "We must keep our faith in the Republic",
+            "Chewie, we’re home",
+            "I’m one with the Force. The Force is with me",
+            "I am a Jedi, like my father before me",
+            "When gone am I, the last of the Jedi will you be",
+            "This ship that made the Kessel run in less than twelve parsecs",
+        ];
+        const i = Math.floor(Math.random() * messages.length);
+        console.log(i);
+        setLoadingMessage(messages[i]);
+    };
+
     if (isFetching) {
         return (
             <div>
                 <StationaryComponets changePage={changePage} handleSearch={handleSearch} />
-                <button style={{ marginTop: 60, padding: 20, fontSize: 30 }} class="btn btn-warning">
-                    I find your lack of faith disturbing
-                    <span class="spinner-grow spinner-grow-sm"></span>
+                <button style={{ marginTop: 60, padding: 20, fontSize: 30 }} className="btn btn-warning">
+                    {loadingMessage}
+                    <span className="spinner-grow spinner-grow-sm"></span>
                 </button>
             </div>
         );
