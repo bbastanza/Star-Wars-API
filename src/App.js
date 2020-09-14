@@ -93,8 +93,9 @@ export default function App() {
     function fetchSpecies(character) {
         let species = "Human";
         if (character.species.length > 0) {
+            const httpsSpecies = `https${character.species[0].substring(4)}`;
             species = axios
-                .get(character.species[0])
+                .get(httpsSpecies)
                 .then(response => response.data.name)
                 .catch(error => console.log(error));
         }
@@ -102,8 +103,9 @@ export default function App() {
     }
 
     function fetchHomeworld(character) {
+        const httpsHomeworld = `https${character.homeworld.substring(4)}`;
         return axios
-            .get(character.homeworld)
+            .get(httpsHomeworld)
             .then(response => response.data.name)
             .catch(error => console.log(error));
     }
