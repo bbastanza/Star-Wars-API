@@ -14,6 +14,8 @@ I built this app to dive deeper into learning the React front end framework and 
 
 Up to this point the projects I have worked on have been using static data or data that has been provided by the user. This application was a great opportunity to look deeper into how the web works. Building this project was also a chance to continue to practice working with react. I wanted to try to learn as much new things as possible, which is why I chose to use only functional components with React Hooks.
 
+Specific things I used and learned while building this application:
+
 > React Hooks including useState & useEffect
 
 > Using Postman during the build process to validate http requests
