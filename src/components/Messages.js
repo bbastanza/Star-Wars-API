@@ -1,6 +1,6 @@
 import React, { useEffect, useState, memo } from "react";
 
-function Messages(props) {
+function Messages({ pageNumber }) {
     const [loadingMessage, setLoadingMessage] = useState("I sense much fear in you");
     useEffect(() => {
         const messages = [
@@ -17,7 +17,7 @@ function Messages(props) {
         ];
         const i = Math.floor(Math.random() * messages.length);
         setLoadingMessage(messages[i]);
-    }, [props.pageNumber]);
+    }, [pageNumber]);
 
     return (
         <div>

@@ -1,14 +1,14 @@
 import React from "react";
 
-function TableDataRow(props) {
+function TableDataRow({ character }) {
     return (
         <tr className="altFont">
-            <td>{props.character.name}</td>
-            <td>{props.character.birth_year}</td>
-            <td>{props.character.heightFormatted}</td>
-            <td>{props.character.weight}</td>
-            <td>{props.character.homeworldName}</td>
-            <td>{props.character.speciesName}</td>
+            <td>{character.name}</td>
+            <td>{character.birth_year}</td>
+            <td>{character.heightFormatted}</td>
+            <td>{character.weight}</td>
+            <td>{character.homeworldName}</td>
+            <td>{character.speciesName}</td>
         </tr>
     );
 }

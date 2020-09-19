@@ -1,26 +1,24 @@
 import React, { useState, memo } from "react";
 
-function SearchDisplay(props) {
-    const [textBoxValue, settextBoxValue] = useState("");
+function SearchBar(props) {
+    const [textBoxValue, setTextBoxValue] = useState("");
 
     const pressedSubmit = e => {
         e.preventDefault();
         props.handleSearch(textBoxValue);
-        settextBoxValue("");
+        setTextBoxValue("");
     };
 
     function handleChange(e) {
         const { value } = e.target;
-        settextBoxValue(value);
-        /// when textbox is empied restore table
-        if (textBoxValue === "") props.handleSearch("");
+        setTextBoxValue(value);
     }
 
     return (
         <form onSubmit={pressedSubmit}>
             <button className="btn btn-warning col-1">Search Characters</button>
             <input
-                onChange={handleChange}
+                onChange={e => handleChange(e)}
                 className="col-sm-5 margin-top altFont"
                 type="text"
                 placeholder="Help me, Obi-Wan Kenobi. You’re my only hope."
@@ -30,4 +28,4 @@ function SearchDisplay(props) {
     );
 }
 
-export default memo(SearchDisplay);
+export default memo(SearchBar);

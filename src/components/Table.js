@@ -1,7 +1,7 @@
 import React from "react";
 import HeaderRow from "./HeaderRow";
 
-export default function Table(props) {
+export default function Table({ rows }) {
     return (
         <div>
             <table
@@ -9,7 +9,7 @@ export default function Table(props) {
                 className="table table-dark table-striped margin-top table-hover shadows"
             >
                 <HeaderRow />
-                <tbody>{props.rows}</tbody>
+                <tbody>{rows}</tbody>
             </table>
         </div>
     );

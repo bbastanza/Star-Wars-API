@@ -30,6 +30,7 @@ export default function App() {
             createTableRows();
         } else if (previousSearchCharacter !== searchCharacter) {
             if (searchCharacter.length > 0) fetchSearch(searchCharacter);
+            else backToPage();
         } else if (prevPageNumber !== pageNumber) {
             const cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
             displayPage(cachedPage);
