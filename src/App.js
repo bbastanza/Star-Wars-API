@@ -148,7 +148,7 @@ export default function App() {
             <div className="App">
                 <StationaryComponets changePage={changePage} handleSearch={searched => setSearchCharacter(searched)} />
                 {searchCharacter === "" ? (
-                    <h4 style={{ color: "#fee71e", marginTop: 20 }}>page: {pageNumber}</h4>
+                    <h4 style={{ color: "#fee71e", marginTop: 20 }}>Page: {pageNumber}</h4>
                 ) : (
                     <ReturnButton backToPage={backToPage} />
                 )}
