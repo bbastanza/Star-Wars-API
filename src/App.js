@@ -139,14 +139,22 @@ export default function App() {
     if (isFetching) {
         return (
             <div className="App">
-                <StationaryComponets changePage={changePage} handleSearch={searched => setSearchCharacter(searched)} />
+                <StationaryComponets
+                    isLoading={isFetching}
+                    changePage={changePage}
+                    handleSearch={searched => setSearchCharacter(searched)}
+                />
                 <Messages pageNumber={pageNumber} />
             </div>
         );
     } else {
         return (
             <div className="App">
-                <StationaryComponets changePage={changePage} handleSearch={searched => setSearchCharacter(searched)} />
+                <StationaryComponets
+                    onSearch={searchCharacter !== ""}
+                    changePage={changePage}
+                    handleSearch={searched => setSearchCharacter(searched)}
+                />
                 {searchCharacter === "" ? (
                     <h4 style={{ color: "#fee71e", marginTop: 20 }}>Page: {pageNumber}</h4>
                 ) : (
