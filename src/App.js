@@ -4,7 +4,6 @@ import Table from "./components/Table";
 import TableDataRow from "./components/TableDataRow";
 import StationaryComponets from "./components/StationaryComponents";
 import Messages from "./components/Messages";
-import ReturnButton from "./components/ReturnButton";
 import axios from "axios";
 import { formatData } from "./functions/format";
 import { checkDateCreated } from "./functions/checkDateCreated";
@@ -67,7 +66,7 @@ export default function App() {
     async function fetchSearch(searchCharacters) {
         setIsFetching(true);
         const searchResults = await axios
-            .get(`https://swapi.dev/api/people/?search=${searchCharacters}`)
+            .get(`https://swapi.py4e.com/api/people/?search=${searchCharacters}`)
             .then(response => response.data.results);
         setAdditionalData(searchResults);
     }
@@ -75,7 +74,7 @@ export default function App() {
     async function fetchPage() {
         setIsFetching(true);
         const pageResults = await axios
-            .get(`https://swapi.dev/api/people/?page=${pageNumber}`)
+            .get(`https://swapi.py4e.com/api/people/?page=${pageNumber}`)
             .then(response => response.data.results)
             .catch(error => console.log(error));
         setAdditionalData(pageResults);
@@ -154,12 +153,9 @@ export default function App() {
                     onSearch={searchCharacter !== ""}
                     changePage={changePage}
                     handleSearch={searched => setSearchCharacter(searched)}
+                    backToPage={backToPage}
                 />
-                {searchCharacter === "" ? (
-                    <h4 style={{ color: "#fee71e", marginTop: 20 }}>Page: {pageNumber}</h4>
-                ) : (
-                    <ReturnButton backToPage={backToPage} />
-                )}
+                {searchCharacter === "" ? <h4 style={{ color: "#fee71e", marginTop: 20 }}>Page: {pageNumber}</h4> : ""}
                 <Table rows={tableComponents} />
             </div>
         );

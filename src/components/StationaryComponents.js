@@ -1,29 +1,28 @@
 import React, { memo } from "react";
-import SearchBar from "./SearchBar";
 import Buttons from "./Buttons";
-import redSaber from "./../Images/blueLightsaber.png";
-import Header from "./Header";
 import ReturnButton from "./ReturnButton";
+import Top from "./Top";
 
 function StationaryComponents(props) {
     if (props.isLoading) {
         return (
             <div>
-                <header className="App-header">
-                    <Header />
-                </header>
-                <SearchBar handleSearch={props.handleSearch} />
-                <img src={redSaber} style={{ height: 60, width: 700 }} alt="lightsaber" />
+                <Top handleSearch={props.handleSearch} />
             </div>
         );
-    } else if (props.onSearch)
+    } else if (props.onSearch) {
         return (
             <div>
-                <header className="App-header">
-                    <Header />
-                </header>
-                <SearchBar handleSearch={props.handleSearch} />
-                <img src={redSaber} style={{ height: 60, width: 700 }} alt="lightsaber" />
+                <Top handleSearch={props.handleSearch} />
+                <br />
+                <ReturnButton backToPage={props.backToPage} />
+            </div>
+        );
+    } else
+        return (
+            <div>
+                <Top handleSearch={props.handleSearch} />
+                <br />
                 <Buttons changePage={props.changePage} />
             </div>
         );
