@@ -39,3 +39,7 @@
 .return-button {
     margin: 20 auto 10;
 }
+
+.page-btn {
+    border: 2px black solid;
+}

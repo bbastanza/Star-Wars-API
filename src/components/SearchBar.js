@@ -11,7 +11,9 @@ function SearchBar(props) {
 
     return (
         <form onSubmit={pressedSubmit}>
-            <button className="btn btn-warning col-1">Search Characters</button>
+            <button className="btn btn-warning btn-outline-dark" style={{ width: "auto" }}>
+                Search Characters
+            </button>
             <input
                 onChange={e => setTextBoxValue(e.target.value)}
                 className="col-sm-5 margin-top altFont"

@@ -11,7 +11,7 @@ import { checkDateCreated } from "./functions/checkDateCreated";
 export default function App() {
     const [characters, setCharacters] = useState([]);
     const previousCharacters = usePrevious(characters);
-    const [isFetching, setIsFetching] = useState(true);
+    const [isFetching, setIsFetching] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const prevPageNumber = usePrevious(pageNumber);
     const [searchCharacter, setSearchCharacter] = useState("");
