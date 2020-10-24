@@ -32,6 +32,6 @@ Specific things I used and learned while building this application:
 
 ### Brian Bastanza- Full Stack Web Developer
 
-[Personal Website](https://www.brianbastanza.me/)
+<a href="https://www.brianbastanza.me/" target="_blank">Personal Website</a>
 
 [LinkedIn](www.linkedin.com/in/brian-bastanza-9035397b)
