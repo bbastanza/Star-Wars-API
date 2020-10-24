@@ -70,7 +70,7 @@ export default function App() {
             .then(response => response.data.results);
         setAdditionalData(searchResults);
     }
-
+    
     async function fetchPage() {
         setIsFetching(true);
         const pageResults = await axios
