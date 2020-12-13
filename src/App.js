@@ -10,13 +10,11 @@ import { checkDateCreated } from "./functions/checkDateCreated";
 
 export default function App() {
     const [characters, setCharacters] = useState([]);
-    const previousCharacters = usePrevious(characters);
     const [isFetching, setIsFetching] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const prevPageNumber = usePrevious(pageNumber);
     const [searchCharacter, setSearchCharacter] = useState("");
     const previousSearchCharacter = usePrevious(searchCharacter);
-    const [tableComponents, setTableComponents] = useState([]);
 
     window.onload = () => {
         const cachedPage = JSON.parse(localStorage.getItem(`page${pageNumber}`));
@@ -25,9 +23,7 @@ export default function App() {
     };
 
     useEffect(() => {
-        if (previousCharacters !== characters) {
-            createTableRows();
-        } else if (previousSearchCharacter !== searchCharacter) {
+        if (previousSearchCharacter !== searchCharacter) {
             if (searchCharacter.length > 0) fetchSearch(searchCharacter);
             else backToPage();
         } else if (prevPageNumber !== pageNumber) {
@@ -70,7 +66,7 @@ export default function App() {
             .then(response => response.data.results);
         setAdditionalData(searchResults);
     }
-    
+
     async function fetchPage() {
         setIsFetching(true);
         const pageResults = await axios
@@ -108,13 +104,6 @@ export default function App() {
             .get(httpsHomeworld)
             .then(response => response.data.name)
             .catch(error => console.log(error));
-    }
-
-    function createTableRows() {
-        let newComponents = characters.map(person => {
-            return <TableDataRow character={person} key={person.name} />;
-        });
-        setTableComponents([...newComponents]);
     }
 
     function cachePage(newPageComponents) {
@@ -155,8 +144,8 @@ export default function App() {
                     handleSearch={searched => setSearchCharacter(searched)}
                     backToPage={backToPage}
                 />
-                {searchCharacter === "" ? <h4 style={{ color: "#fee71e", marginTop: 20 }}>Page: {pageNumber}</h4> : ""}
-                <Table rows={tableComponents} />
+                {searchCharacter === "" ? <h4 style={{ color: "#fee71e", marginTop: 20 }}>Page: {pageNumber}</h4> : null}
+                <Table rows={characters.map(person => <TableDataRow character={person} key={person.name} />)} />
             </div>
         );
     }
