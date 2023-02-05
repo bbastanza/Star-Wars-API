@@ -30,8 +30,8 @@ Specific things I used and learned while building this application:
 
 ## Author
 
-### Brian Bastanza- Full Stack Web Developer
+### Abhishek Tailor-   React
 
-<a href="https://www.brianbastanza.me/" target="_blank" rel="noopener">Personal Website</a>
+<a href="https://google.com" target="_blank" rel="noopener">Personal Website</a>
 
-[LinkedIn](https://www.linkedin.com/in/bbastanza)
+[LinkedIn]([https://www.linkedin.com/in/bbastanza](https://www.linkedin.com/in/abhishek-tailor-31b9a7244/))
